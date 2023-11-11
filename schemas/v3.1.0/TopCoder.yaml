@@ -1,0 +1,146 @@
+openapi: 3.1.0
+info: 
+  title: TopCoder API
+  version: 1.0.0
+  description: API for interacting with TopCoder, an AI-powered assistant for software engineers, providing support in coding, debugging, learning, and project management.
+servers:
+  - url: 'https://api.openai.com/v1/chat/completions'
+    description: Main Production Server
+paths: 
+  /query:
+    post:
+      operationId: processQuery
+      summary: Process a general coding-related query
+      description: Receives a general text query related to software engineering and returns an AI-generated response.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/QueryRequest'
+      responses: 
+        '200':
+          description: AI-generated response to the query.
+          content:
+            application/json:
+              schema: 
+                $ref: '#/components/schemas/QueryResponse'
+        '400':
+          description: Bad request, such as invalid input format.
+        '500':
+          description: Internal server error.
+
+  /code-analysis:
+    post:
+      operationId: analyzeCode
+      summary: Analyze and suggest improvements for code
+      description: Receives source code and returns analysis with suggestions for improvements.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CodeAnalysisRequest'
+      responses:
+        '200':
+          description: Analysis and suggestions for the submitted code.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CodeAnalysisResponse'
+        '400':
+          description: Bad request, such as invalid code format.
+        '500':
+          description: Internal server error.
+
+  /debugging-help:
+    post:
+      operationId: provideDebuggingHelp
+      summary: Assist in debugging code
+      description: Receives a description of a bug or issue and source code, returns debugging suggestions.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DebuggingHelpRequest'
+      responses:
+        '200':
+          description: Suggestions and insights for debugging the submitted code.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DebuggingHelpResponse'
+        '400':
+          description: Bad request, such as missing information.
+        '500':
+          description: Internal server error.
+
+components:
+  schemas: 
+    QueryRequest: 
+      type: object
+      properties: 
+        query: 
+          type: string
+          description: Text query related to software engineering.
+      required:
+        - query
+      description: Schema for the query request.
+
+    QueryResponse: 
+      type: object
+      properties: 
+        response: 
+          type: string
+          description: AI-generated answer or guidance based on the query.
+        error:
+          type: string
+          description: Error message, if any.
+      description: Schema for the AI response.
+
+    CodeAnalysisRequest:
+      type: object
+      properties:
+        code:
+          type: string
+          description: Source code to be analyzed.
+      required:
+        - code
+      description: Schema for the code analysis request.
+
+    CodeAnalysisResponse:
+      type: object
+      properties:
+        analysis:
+          type: string
+          description: Analysis results and improvement suggestions.
+        error:
+          type: string
+          description: Error message, if any.
+      description: Schema for the code analysis response.
+
+    DebuggingHelpRequest:
+      type: object
+      properties:
+        code:
+          type: string
+          description: Source code where the bug is suspected.
+        description:
+          type: string
+          description: Description of the bug or issue encountered.
+      required:
+        - code
+        - description
+      description: Schema for the debugging help request.
+
+    DebuggingHelpResponse:
+      type: object
+      properties:
+        suggestions:
+          type: string
+          description: Debugging suggestions and insights.
+        error:
+          type: string
+          description: Error message, if any.
+      description: Schema for the debugging help response.
